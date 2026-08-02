@@ -49,55 +49,11 @@
       z-index: 9999;
     }
 
-    /* arcade grid */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
-      background-size: 32px 32px;
-      pointer-events: none;
-      z-index: -1;
-      animation: gridPulse 6s ease-in-out infinite;
-    }
-
-    @keyframes gridPulse {
-      0%, 100% { opacity: 0.5; }
+    
       50% { opacity: 1; }
     }
 
-    /* floating energy orbs */
-    .shape {
-      position: fixed;
-      pointer-events: none;
-      z-index: -1;
-      border-radius: 50%;
-      filter: blur(40px);
-      opacity: 0.2;
-      animation: floatShape 11s ease-in-out infinite;
-    }
-    .shape1 {
-      width: 260px; height: 260px;
-      background: var(--red);
-      top: 5%; left: -60px;
-    }
-    .shape2 {
-      width: 200px; height: 200px;
-      background: var(--cyan);
-      top: 50%; right: -50px;
-      animation-delay: -4s;
-    }
-    .shape3 {
-      width: 160px; height: 160px;
-      background: var(--pink);
-      bottom: 10%; left: 18%;
-      animation-delay: -7s;
-    }
-
-    @keyframes floatShape {
-      0%, 100% { transform: translate(0, 0) scale(1); }
+    
       33% { transform: translate(30px, -40px) scale(1.08); }
       66% { transform: translate(-20px, 25px) scale(0.92); }
     }
@@ -474,16 +430,160 @@
       header h1 { font-size: 1rem; }
       .logo { font-size: 0.5rem; }
     }
+
+    /* Darker background + overlay */
+    body {
+      background: #05050a !important;
+    }
+
+    .dark-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* VS badge */
+    .vs-badge {
+      display: inline-block;
+      margin: 0.8rem 0 0.4rem;
+      padding: 0.25rem 0.9rem;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.9rem;
+      color: #000;
+      background: var(--yellow);
+      border: 3px solid var(--red);
+      box-shadow: 0 0 12px var(--yellow), 3px 3px 0 #000;
+      animation: vsPulse 1.5s ease-in-out infinite;
+      letter-spacing: 2px;
+    }
+
+    @keyframes vsPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 12px var(--yellow), 3px 3px 0 #000; }
+      50% { transform: scale(1.08); box-shadow: 0 0 22px var(--yellow), 4px 4px 0 #000; }
+    }
+
+    /* Health / skill bar */
+    .health-bar {
+      width: 120px;
+      height: 10px;
+      background: #222;
+      border: 2px solid var(--yellow);
+      margin: 0.6rem auto 0;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 8px rgba(255, 230, 0, 0.4);
+    }
+
+    .health-bar::after {
+      content: "";
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 78%;
+      background: linear-gradient(90deg, var(--red), var(--orange), var(--yellow));
+      animation: healthPulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes healthPulse {
+      0%, 100% { width: 78%; opacity: 1; }
+      50% { width: 85%; opacity: 0.85; }
+    }
+
+    /* ===== KO FLASH EFFECTS ===== */
+    .ko-flash {
+      position: relative;
+    }
+
+    .ko-flash::before {
+      content: "KO";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0.5);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 2.8rem;
+      color: var(--red);
+      text-shadow:
+        0 0 10px var(--red),
+        0 0 20px var(--yellow),
+        4px 4px 0 #000;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 10;
+      letter-spacing: 4px;
+    }
+
+    .ko-flash.ko-active::before {
+      animation: koStamp 0.9s cubic-bezier(0.22, 1.2, 0.36, 1) forwards;
+    }
+
+    @keyframes koStamp {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(2.5) rotate(-8deg);
+      }
+      25% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.1) rotate(3deg);
+      }
+      50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8) rotate(0deg);
+      }
+    }
+
+    .ko-flash.ko-active {
+      animation: koHeaderFlash 0.7s ease-out;
+    }
+
+    @keyframes koHeaderFlash {
+      0% {
+        background: transparent;
+        text-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+      }
+      15% {
+        background: rgba(255, 0, 60, 0.25);
+        color: #fff;
+        text-shadow:
+          0 0 12px #fff,
+          0 0 24px var(--yellow),
+          0 0 36px var(--red);
+      }
+      35% {
+        background: rgba(255, 230, 0, 0.2);
+        color: var(--yellow);
+        text-shadow:
+          0 0 16px var(--yellow),
+          0 0 28px var(--red);
+      }
+      100% {
+        background: transparent;
+        color: var(--cyan);
+        text-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+      }
+    }
+
+    .ko-flash.ko-active .num {
+      animation: koNumPop 0.6s ease-out;
+    }
+
+    @keyframes koNumPop {
+      0% { transform: scale(1); }
+      30% { transform: scale(1.35); background: var(--yellow); color: #000; box-shadow: 0 0 16px var(--yellow), 3px 3px 0 #000; }
+      100% { transform: scale(1); }
+    }
   </style>
 </head>
 <body>
+  <div class="dark-overlay"></div>
 
 
-  <div class="shape shape1"></div>
-  <div class="shape shape2"></div>
-  <div class="shape shape3"></div>
-
-<nav>
+  <nav>
   <div class="logo">The Case For Competition</div>
   <div class="nav-links">
     <a href="#what">What is it?</a>
@@ -498,12 +598,14 @@
 
 <header>
   <h1>THE CASE FOR<br><span>COMPETITION</span></h1>
+  <div class="vs-badge">VS</div>
   <p>A sociological look at why competition matters, how it got reframed, and what the numbers actually show.</p>
+  <div class="health-bar" title="Skill Meter"></div>
   <div class="accent-line"></div>
 </header>
 
 <section id="what" class="reveal">
-  <h2><span class="num">01</span> What is competition?</h2>
+  <h2 class="ko-flash"><span class="num">01</span> What is competition?</h2>
   <p>Competition is a rules based way people and groups go after limited rewards - grades, resources, status, jobs. It’s not automatically good or bad. It’s a form of social technology.</p>
 
   <div class="card">
@@ -535,7 +637,7 @@
 </section>
 
 <section id="labeling" class="reveal">
-  <h2><span class="num">02</span> How competition got labeled</h2>
+  <h2 class="ko-flash"><span class="num">02</span> How competition got labeled</h2>
   <p>In a bunch of recent institutional materials, traits that usually support competition got rebranded as racial or harmful.</p>
 
   <div class="card">
@@ -568,7 +670,7 @@
 </section>
 
 <section id="psych" class="reveal">
-  <h2><span class="num">03</span> Psychology & incentives</h2>
+  <h2 class="ko-flash"><span class="num">03</span> Psychology & incentives</h2>
 
   <div class="card">
     <div class="card-header" onclick="toggleCard(this)">
@@ -594,7 +696,7 @@
 </section>
 
 <section id="data" class="reveal">
-  <h2><span class="num">04</span> The actual numbers</h2>
+  <h2 class="ko-flash"><span class="num">04</span> The actual numbers</h2>
   <p>Here’s what the National Assessment of Educational Progress (NAEP) shows.</p>
 
   <div class="stat-grid">
@@ -640,7 +742,7 @@
 </section>
 
 <section id="correlation" class="reveal">
-  <h2><span class="num">05</span> Putting it together</h2>
+  <h2 class="ko-flash"><span class="num">05</span> Putting it together</h2>
   <p>Two big shifts line up with the stagnation and drop:</p>
   <ul>
     <li>The high-accountability No Child Left Behind Act era (strong federal competitive pressure on public schools) overlapped with rising or stable scores and gap-narrowing.</li>
@@ -655,7 +757,7 @@
 
 <!-- THEORY -->
 <section id="theory" class="reveal">
-  <h2><span class="num">06</span> Functionalism & Conflict Theory</h2>
+  <h2 class="ko-flash"><span class="num">06</span> Functionalism & Conflict Theory</h2>
   <p>Two classic sociological lenses help explain why the framing of competition matters so much.</p>
 
   <div class="card">
@@ -700,7 +802,7 @@
 </section>
 
 <section id="takeaways" class="reveal">
-  <h2><span class="num">07</span> Takeaways</h2>
+  <h2 class="ko-flash"><span class="num">07</span> Takeaways</h2>
   <div class="card open">
     <div class="card-header" onclick="toggleCard(this)">
       The short version
@@ -735,9 +837,19 @@
   const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) entry.target.classList.add('visible');
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+
+        // Trigger KO flash on the section header (once)
+        const header = entry.target.querySelector('h2.ko-flash');
+        if (header && !header.dataset.koPlayed) {
+          header.dataset.koPlayed = '1';
+          header.classList.add('ko-active');
+          setTimeout(() => header.classList.remove('ko-active'), 1000);
+        }
+      }
     });
-  }, { threshold: 0.12 });
+  }, { threshold: 0.18 });
   reveals.forEach(el => observer.observe(el));
 
   new Chart(document.getElementById('scoreChart').getContext('2d'), {
